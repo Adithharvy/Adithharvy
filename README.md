@@ -2,10 +2,14 @@
 
 ## Project portfolio
 
-| Project | What to look for |
-| --- | --- |
-| [Iris classifier evaluation](https://github.com/Adithharvy/Adithharvy/tree/main/projects/iris-evaluation) | A reproducible comparison of a majority-class baseline and logistic regression, with a breakdown of the seven misclassified flowers. |
-| [Support queue analysis](https://github.com/Adithharvy/Adithharvy/tree/main/projects/support-queue) | A SQL snapshot of ticket backlog and resolution times. Change the reporting cutoff to see how a queue changes over time. |
-| [NumPy notebook](https://github.com/Adithharvy/AI-ML-Internship/blob/main/numpy.ipynb) | Explore the existing internship practice notebook. |
+| Project | Question and result | Evidence |
+| --- | --- | --- |
+| [Support queue analysis](projects/support-queue) | Which queue has waited longest? In the fictional sample, Payments has a 36-hour open ticket despite a six-hour average resolution time for closed tickets. | [SQL query](projects/support-queue/report.sql) · [Four boundary tests](projects/support-queue/test_report.py) |
+| [Iris classifier evaluation](projects/iris-evaluation) | Can logistic regression beat a simple baseline? It classified 143 of 150 held-out examples correctly across five folds. The baseline classified 50 correctly. | [Evaluation script](projects/iris-evaluation/evaluate.py) · [Error analysis and run instructions](projects/iris-evaluation/README.md) |
+| [NumPy practice notebook](https://github.com/Adithharvy/AI-ML-Internship/blob/main/numpy.ipynb) | Internship practice with NumPy. | [Open notebook](https://github.com/Adithharvy/AI-ML-Internship/blob/main/numpy.ipynb) |
 
-Both portfolio exercises include runnable code, sample results and an explanation of how to interpret the output.
+To check the queue report's cutoff behavior, run this from the repository root:
+
+```sh
+python -m unittest discover -s projects/support-queue -v
+```
