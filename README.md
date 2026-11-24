@@ -22,6 +22,10 @@ From the repository root:
 python -m unittest discover -s projects/support-queue -v
 ```
 
+## Internship experience
+
+**Machine Learning Intern · Srishti Innovative** — Worked on Python machine-learning and data-analysis projects, including data preprocessing, visualization and model evaluation.
+
 ## Practice notebooks
 
 [NumPy array practice](https://github.com/Adithharvy/AI-ML-Internship/blob/main/numpy.ipynb) covers vectors, matrices, numeric sequences and repeatable random samples.
@@ -32,3 +36,5 @@ Completed through Forage on 30 June 2026.
 
 - **Quantium · Data Analytics** — Prepared customer data and used experimentation and uplift testing to evaluate commercial impact. Credential ID `65GbAMZ3Sk3qXYDB8`.
 - **Quantium · Software Engineering** — Processed data, built a Python Dash application and tested its behavior. Credential ID `4cHjB3Cct6TZq7gLv`.
+- **British Airways · Data Science** — Modeled lounge eligibility at Heathrow Terminal 3 and predicted customer buying behaviour. Credential ID `fvChu3WRfwQPF6Zb3`.
+- **Hewlett Packard Enterprise · Software Engineering** — Built a RESTful web service, added data upload functionality and created unit tests. Credential ID `EGmG3Di5NqzeYt8td`.
