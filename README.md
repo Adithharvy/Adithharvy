@@ -24,7 +24,11 @@ python -m unittest discover -s projects/support-queue -v
 
 ## Internship experience
 
-**Machine Learning Intern · Srishti Innovative** — Worked on Python machine-learning and data-analysis projects, including data preprocessing, visualization and model evaluation.
+**AI/ML Intern · Srishti Innovative Educational Services**
+
+Kazhakkoottam, Trivandrum · 8–19 June 2026 (two weeks) · Certificate of Participation `SIES2026060000265`.
+
+Worked on Python machine-learning and data-analysis projects, including data preprocessing, visualization and model evaluation.
 
 ## Practice notebooks
 
