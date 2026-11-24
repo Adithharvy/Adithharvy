@@ -25,3 +25,10 @@ python -m unittest discover -s projects/support-queue -v
 ## Practice notebooks
 
 [NumPy array practice](https://github.com/Adithharvy/AI-ML-Internship/blob/main/numpy.ipynb) covers vectors, matrices, numeric sequences and repeatable random samples.
+
+## Selected job simulations
+
+Completed through Forage on 30 June 2026.
+
+- **Quantium · Data Analytics** — Prepared customer data and used experimentation and uplift testing to evaluate commercial impact. Credential ID `65GbAMZ3Sk3qXYDB8`.
+- **Quantium · Software Engineering** — Processed data, built a Python Dash application and tested its behavior. Credential ID `4cHjB3Cct6TZq7gLv`.
