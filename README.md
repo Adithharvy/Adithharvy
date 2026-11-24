@@ -38,3 +38,7 @@ Completed through Forage on 30 June 2026.
 - **Quantium · Software Engineering** — Processed data, built a Python Dash application and tested its behavior. Credential ID `4cHjB3Cct6TZq7gLv`.
 - **British Airways · Data Science** — Modeled lounge eligibility at Heathrow Terminal 3 and predicted customer buying behaviour. Credential ID `fvChu3WRfwQPF6Zb3`.
 - **Hewlett Packard Enterprise · Software Engineering** — Built a RESTful web service, added data upload functionality and created unit tests. Credential ID `EGmG3Di5NqzeYt8td`.
+
+## Technical workshops
+
+- **2-Day Cyber Security & Digital Forensics Workshop** · Bharat Space Education Research Centre, 20–21 June 2026. Certificate of attendance.
