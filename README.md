@@ -1,5 +1,12 @@
 # Python, SQL and machine learning
 
+## Maritime and Earth observation demos
+
+- [Port Turnaround Simulator](projects/port-turnaround-simulator) compares berth and crane capacity across paired synthetic vessel arrivals.
+- [Satellite Flood Change Explorer](projects/satellite-flood-change-explorer) compares a before/after water mask with an after-only baseline and shows threshold sensitivity and cloud gaps on a synthetic scene.
+
+Both projects are AI-assisted portfolio prototypes. Each folder includes a runnable offline demo and reproducible checks.
+
 ## Start here · Iris classifier evaluation
 
 [Open the one-minute demo and reproduce the results](https://github.com/Adithharvy/Adithharvy/tree/main/projects/iris-evaluation)

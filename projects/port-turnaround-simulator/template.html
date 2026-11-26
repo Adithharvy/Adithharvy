@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Port Turnaround Simulator</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eaf0f2;color:#142930;font:16px system-ui}main{max-width:1080px;margin:auto;padding:3rem 1.2rem}header{background:#123039;color:#fff;padding:2rem;border-radius:1.1rem}h1{font-size:clamp(2rem,5vw,3.5rem);margin:.3rem 0;letter-spacing:-.045em}p{line-height:1.5}header p{max-width:60ch}.panel{background:white;padding:1.2rem;margin-top:1rem;border-radius:.8rem}select{font:inherit;padding:.45rem;color:inherit;background:#fff;border:1px solid #708990;border-radius:.35rem}label{display:inline-flex;gap:.5rem;align-items:center;margin:.35rem 1rem .35rem 0}.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:.6rem}.metric{padding:.9rem;background:#eff5f4;border-radius:.5rem}.metric b{display:block;font-size:1.8rem}.wrap{overflow:auto}table{width:100%;border-collapse:collapse;text-align:left}th,td{padding:.6rem;border-bottom:1px solid #d8e3e5;white-space:nowrap}tr.active{background:#ceebe1}.bar{height:.4rem;background:#257059;border-radius:2px;min-width:2px}small{color:#40575d}button:focus,select:focus{outline:3px solid #0a817b}
+</style>
+<main><header><span>SYNTHETIC CONTAINER TERMINAL</span><h1>Port Turnaround Simulator</h1><p>Compare staffing and berth capacity on identical vessel arrivals. Look at long waits before deciding which resource to add.</p></header>
+<section class="panel" aria-label="Scenario controls">
+<label>Demand <select id="d"><option>Normal</option><option>Surge</option></select></label>
+<label>Berths <select id="b"><option>2</option><option selected>3</option><option>4</option></select></label>
+<label>Cranes <select id="c"><option selected>2</option><option>3</option><option>4</option></select></label>
+<div class="metrics" id="metrics" aria-live="polite"></div><p id="delta"></p></section>
+<section class="panel"><h2>All capacity options</h2><div class="wrap"><table><thead><tr><th>Berths / cranes</th><th>95th-percentile wait</th><th>Wait over 12 h</th><th>Berth utilization</th><th>Crane utilization</th></tr></thead><tbody id="grid"></tbody></table></div></section>
+<section class="panel"><h2>First 12 vessels in trial 38</h2><div class="wrap"><table><thead><tr><th>Vessel</th><th>Arrival (h)</th><th>Start (h)</th><th>Departure (h)</th><th>Berth</th><th>Crane</th></tr></thead><tbody id="calls"></tbody></table></div><p><small>Hours are relative to the start of each trial. Each vessel holds one berth and one crane together. Utilization is measured from first arrival through final departure. Results describe the simulation only.</small></p></section>
+</main>
+<script>
+const rows=__DATA__;
+const el=id=>document.getElementById(id);
+function render(){
+ const candidates=rows.filter(s=>s.demand===el('d').value);
+ const baseline=candidates.find(s=>s.berths===2&&s.cranes===2);
+ const s=candidates.find(s=>s.berths===Number(el('b').value)&&s.cranes===Number(el('c').value));
+ el('metrics').innerHTML=[[s.average+' h','Mean wait'],[s.p95+' h','95th-percentile wait'],[s.turnaround+' h','Mean turnaround'],[s.n.toLocaleString(),'Simulated vessels']].map(([n,l])=>'<div class="metric"><b>'+n+'</b>'+l+'</div>').join('');
+ el('delta').textContent='Change in 95th-percentile wait versus 2 berths / 2 cranes: '+(s.p95-baseline.p95).toFixed(1)+' hours.';
+ const max=Math.max(...candidates.map(t=>t.p95),1);
+ el('grid').innerHTML=candidates.map(t=>'<tr class="'+(t===s?'active':'')+'"><td>'+t.berths+' / '+t.cranes+'</td><td>'+t.p95+' h<div class="bar" style="width:'+100*t.p95/max+'%"></div></td><td>'+t.delayed+'%</td><td>'+t.berth_use+'%</td><td>'+t.crane_use+'%</td></tr>').join('');
+ el('calls').innerHTML=s.calls.map(r=>'<tr>'+r.map(v=>'<td>'+v+'</td>').join('')+'</tr>').join('');
+}
+['d','b','c'].forEach(id=>el(id).addEventListener('change',render));render();
+</script></html>

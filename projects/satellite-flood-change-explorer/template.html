@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Satellite Flood Change Explorer</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#edf0f7;color:#192b41;font:16px system-ui}main{max-width:1100px;margin:auto;padding:2.7rem 1.2rem}header{background:#182b4a;color:#fff;padding:2rem;border-radius:1rem}h1{font-size:clamp(2rem,5vw,3.3rem);letter-spacing:-.045em;margin:.3rem 0}p{line-height:1.55}section{background:white;padding:1.2rem;margin:1rem 0;border-radius:.8rem}.maps,.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.65rem}figure{margin:0}figcaption{font-weight:650;margin-bottom:.4rem}canvas{width:100%;height:auto;image-rendering:pixelated;border-radius:.4rem;background:#182b4a}.metric{padding:.8rem;background:#edf2fb;border-radius:.5rem}.metric b{display:block;font-size:1.65rem}select{font:inherit;padding:.45rem;border:1px solid #637386;border-radius:.35rem;background:white;color:inherit}label{display:inline-flex;align-items:center;gap:.5rem;margin:0 1rem .8rem 0}table{width:100%;border-collapse:collapse;text-align:left}td,th{padding:.5rem;border-bottom:1px solid #dbe2ef}.selected{background:#d8e9f8}.swatch{display:inline-block;width:.85em;height:.85em;border:1px solid #435572;border-radius:3px;margin:0 .25em 0 .8em}.scroll{overflow:auto}
+</style>
+<main><header><span>CIVIL EARTH OBSERVATION · SYNTHETIC SCENE</span><h1>Satellite Flood Change Explorer</h1><p>Compare two simulated satellite observations. See how a water threshold changes the estimated flooded area and where cloud cover leaves gaps.</p></header>
+<section><label>NDWI threshold <select id="threshold"></select></label><label>Result map <select id="layer"><option value="change">Before/after change</option><option value="post">After-only baseline</option><option value="truth">Synthetic reference</option></select></label><div class="maps"><figure><figcaption>Before · NDWI</figcaption><canvas id="before" role="img" aria-label="Synthetic before water index map"></canvas></figure><figure><figcaption>After · NDWI</figcaption><canvas id="after" role="img" aria-label="Synthetic after water index map with cloud mask"></canvas></figure><figure><figcaption id="caption">New water candidate pixels</figcaption><canvas id="map" role="img" aria-label="Selected water map"></canvas></figure></div><p><span class="swatch" style="background:#259bcb"></span>Higher index or selected water <span class="swatch" style="background:#c0af77"></span>Lower index or other land <span class="swatch" style="background:#dddde6"></span>Masked</p><div class="metrics" id="metrics" aria-live="polite"></div></section>
+<section><h2>Sensitivity and baseline</h2><div class="scroll"><table><thead><tr><th>Threshold</th><th>Change area (km²)</th><th>Change IoU</th><th>After-only IoU</th><th>Change precision</th><th>Change recall</th></tr></thead><tbody id="rows"></tbody></table></div><p>IoU divides the overlap of detected and reference flood pixels by their union. Scores exclude masked pixels. The masked area is the area we cannot evaluate. It is separate from threshold sensitivity.</p><p>The benchmark uses a fictional 30 m grid and generated labels. These results cannot be used to assess a real flood or guide an emergency response.</p></section>
+</main>
+<script>
+const d=__DATA__;
+const bytes=Uint8Array.from(atob(d.packed),c=>c.charCodeAt(0));
+const view=new DataView(bytes.buffer);
+d.pixels=Array.from({length:d.width*d.height},(_,i)=>{
+ const offset=i*5, flags=view.getUint8(offset+4);
+ return [view.getInt16(offset,true)/1000,view.getInt16(offset+2,true)/1000,flags&1,flags>>1];
+});
+const el=id=>document.getElementById(id);
+const water=[37,155,203],land=[192,175,119],cloud=[221,221,230];
+function paint(id,pick){const c=el(id);c.width=d.width;c.height=d.height;const ctx=c.getContext('2d');const img=ctx.createImageData(d.width,d.height);
+ d.pixels.forEach((p,i)=>img.data.set([...pick(p),255],i*4));ctx.putImageData(img,0,0);}
+const blend=v=>{const f=Math.max(0,Math.min(1,(v+.32)/.75));return land.map((n,i)=>Math.round(n+(water[i]-n)*f));};
+el('threshold').innerHTML=d.results.map(r=>'<option value="'+r.threshold+'">'+r.threshold.toFixed(2)+'</option>').join('');
+el('threshold').value=d.default;
+paint('before',p=>blend(p[0]));paint('after',p=>p[2]?cloud:blend(p[1]));
+function render(){
+ const t=Number(el('threshold').value),layer=el('layer').value,row=d.results.find(r=>r.threshold===t);
+ const selected=layer==='post'?row.post:row.change;
+ el('caption').textContent={change:'New water candidate pixels',post:'After-only baseline water',truth:'Synthetic flood reference'}[layer];
+ paint('map',([a,b,mask,truth])=>mask?cloud:({change:b>=t&&a<t,post:b>=t,truth:truth}[layer]?water:land));
+ const area=layer==='truth'?(row.change.tp+row.change.fn)*d.area_per_pixel:selected.area;
+ el('metrics').innerHTML=[[area.toFixed(3)+' km²',layer==='truth'?'Visible reference flood area':'Candidate water area'],[layer==='truth'?'—':selected.iou.toFixed(3),'IoU vs visible reference'],[(d.masked*d.area_per_pixel).toFixed(3)+' km²','Masked observation area']].map(([v,l])=>'<div class="metric"><b>'+v+'</b>'+l+'</div>').join('');
+ el('rows').innerHTML=d.results.map(r=>'<tr class="'+(r===row?'selected':'')+'">'+[r.threshold.toFixed(2),r.change.area,r.change.iou,r.post.iou,r.change.precision,r.change.recall].map(v=>'<td>'+v+'</td>').join('')+'</tr>').join('');
+}
+['threshold','layer'].forEach(id=>el(id).addEventListener('change',render));render();
+</script></html>
